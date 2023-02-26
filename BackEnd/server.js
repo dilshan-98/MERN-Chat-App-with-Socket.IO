@@ -16,7 +16,7 @@ app.get("/api/chat", (req, res) => {
 
 app.get("/api/chat/:id", (req, res) => {
     const id = req.params.id;
-    const chat = chats.find(chat => chat._id === id);
+    const chat = chats.find(chat => chat._id === id); //find only one chat instead of filter
 
     res.send(chat);
 });
