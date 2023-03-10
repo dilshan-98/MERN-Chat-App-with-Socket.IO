@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Container,
@@ -8,6 +9,8 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
+import Login from "../Components/Login";
+import Register from "../Components/Register";
 
 const Homepage = () => {
   return (
@@ -34,10 +37,10 @@ const Homepage = () => {
           </TabList>
           <TabPanels>
             <TabPanel>
-              {/* <Login /> */}
+              <Login />
             </TabPanel>
             <TabPanel>
-              {/* <Signup /> */}
+              <Register />
             </TabPanel>
           </TabPanels>
         </Tabs>
