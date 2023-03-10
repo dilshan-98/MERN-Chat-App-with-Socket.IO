@@ -88,7 +88,7 @@ const Register = () => {
       </FormControl>
       <Button
         colorScheme="blue"
-        width="100"
+        width="100%"
         style={{ marginTop: 15 }}
         color="white"
         onClick={submitHandler}
