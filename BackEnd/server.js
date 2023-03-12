@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-import chats from "./data/data.js";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 
