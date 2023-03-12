@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import chats from "./data/data.js";
 import connectDB from "./config/db.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -9,20 +10,14 @@ connectDB();
 
 const app = express();
 
+//allow json from FE
+app.use(express.json());
+
 app.get("/", (req, res) => {
     res.send("API is running!");
 });
 
-app.get("/api/chat", (req, res) => {
-    res.send(chats);
-});
-
-app.get("/api/chat/:id", (req, res) => {
-    const id = req.params.id;
-    const chat = chats.find(chat => chat._id === id); //find only one chat instead of filter
-
-    res.send(chat);
-});
+app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT;
 
