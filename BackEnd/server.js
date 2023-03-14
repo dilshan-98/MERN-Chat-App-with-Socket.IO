@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
-import notFound from "./middleware/errorHandling.js";
+import {notFound, errorHandler} from "./middleware/errorHandling.js";
 
 dotenv.config();
 
@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoutes);
 
 app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 
