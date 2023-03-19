@@ -5,6 +5,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
@@ -16,37 +17,77 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState();
   const [pic, setPic] = useState();
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const toggleClick = () => setShow(!show);
 
-  const postDetails = (pic) => {};
+  const postDetails = (pic) => {
+    setLoading(true);
+    if (pic === undefined) {
+      toast({
+        title: "Please select an image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+    console.log(pic.type)
+
+    if (pic.type !== 'image/jpeg' && pic.type !== 'image/png') {
+      console.log(pic.type)
+      toast({
+        title: "Please use a valid image format",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    const data = new FormData();
+    data.append("file", pic);
+    data.append("upload_preset", "chat-app-demo");
+    data.append("cloud_name", "dlrdu7lk5");
+    fetch("https://api.cloudinary.com/v1_1/dlrdu7lk5/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setPic(res.url.toString());
+        console.log("URL for pic: ", res.url.toString());
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      })
+  };
 
   const submitHandler = () => {};
 
   return (
     <VStack spacing="5px">
       <FormControl id="full-name" isRequired>
-        <FormLabel>
-          Full Name
-        </FormLabel>
+        <FormLabel>Full Name</FormLabel>
         <Input
           placeholder="Enter your Name"
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
       <FormControl id="email" isRequired>
-        <FormLabel>
-          Email
-        </FormLabel>
+        <FormLabel>Email</FormLabel>
         <Input
           placeholder="Enter your Email"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel>
-          Password
-        </FormLabel>
+        <FormLabel>Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
@@ -61,9 +102,7 @@ const Register = () => {
         </InputGroup>
       </FormControl>
       <FormControl id="confirm-password" isRequired>
-        <FormLabel>
-          Confirm Password
-        </FormLabel>
+        <FormLabel>Confirm Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
