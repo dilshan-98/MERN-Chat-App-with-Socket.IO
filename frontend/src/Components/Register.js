@@ -9,6 +9,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import axios from "axios";
 
 const Register = () => {
   const [name, setName] = useState();
@@ -32,6 +33,7 @@ const Register = () => {
         isClosable: true,
         position: "bottom",
       });
+      setLoading(false);
       return;
     }
     console.log(pic.type)
@@ -45,6 +47,7 @@ const Register = () => {
         isClosable: true,
         position: "bottom",
       });
+      setLoading(false);
       return;
     }
 
@@ -68,7 +71,63 @@ const Register = () => {
       })
   };
 
-  const submitHandler = () => {};
+  const submitHandler = async () => {
+    setLoading(true);
+
+    if(!name || !email || !password || !confirmPassword) {
+      toast({
+        title: "Please fill all the fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    if(password !== confirmPassword) {
+      toast({
+        title: "Passwords Do Not Match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        }
+      };
+
+      const {data} = await axios.post("http://localhost:5000/api/user", {name, email, password, pic}, config);
+      console.log(data);
+      toast({
+        title: "Registration Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error.response.data.msg);
+      toast({
+        title: "Registration Failed",
+        description: error.response.data.msg,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  };
 
   return (
     <VStack spacing="5px">
@@ -131,6 +190,7 @@ const Register = () => {
         style={{ marginTop: 15 }}
         color="white"
         onClick={submitHandler}
+        isLoading={loading}
       >
         Submit
       </Button>
