@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState();
@@ -20,6 +21,7 @@ const Register = () => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
 
   const toggleClick = () => setShow(!show);
 
@@ -106,7 +108,7 @@ const Register = () => {
       };
 
       const {data} = await axios.post("http://localhost:5000/api/user", {name, email, password, pic}, config);
-      console.log(data);
+      
       toast({
         title: "Registration Successful",
         status: "success",
@@ -114,10 +116,14 @@ const Register = () => {
         isClosable: true,
         position: "bottom",
       });
+
+      localStorage.setItem("userData", JSON.stringify(data));
+
       setLoading(false);
+
+      navigate("/chats");
     } catch (error) {
       setLoading(false);
-      console.log(error.response.data.msg);
       toast({
         title: "Registration Failed",
         description: error.response.data.msg,
