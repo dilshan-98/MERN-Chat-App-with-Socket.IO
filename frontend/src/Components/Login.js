@@ -87,7 +87,7 @@ const Login = () => {
         <FormLabel>Password</FormLabel>
         <InputGroup size="md">
           <Input
-            value={password}
+            value={password} //useful when setting the guest user
             onChange={(e) => setPassword(e.target.value)}
             type={show ? "text" : "password"}
             placeholder="Enter Password"
