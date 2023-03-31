@@ -4,6 +4,6 @@ import {userRegister, login} from "../controllers/userCtrl.js";
 const router = express.Router();
 
 router.route("/").post(userRegister);
-router.route("/login").get(login);
+router.route("/login").post(login);
 
 export default router;
