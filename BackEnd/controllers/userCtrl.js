@@ -44,10 +44,35 @@ const login = async (req, res) => {
   const currentUser = await user.findOne({ email });
 
   if (currentUser && (await currentUser.matchPassword(password))) {
-    return res.status(200).json({ msg: "Login successful", token: generateToken(currentUser._id) });
+    return res
+      .status(200)
+      .json({ msg: "Login successful", token: generateToken(currentUser._id) });
   } else {
     return res.status(400).json({ msg: "Invalid credentials" });
   }
 };
 
-export { userRegister, login };
+// api/user?search=john
+const allUsers = async (req, res) => {
+  //these are operators in mongo
+  //$or is to choose either name or email when searching
+  //$regex to get the strings
+  //$options: "i" this one is to select both upper and lower case (there are more options available on mongo docs)
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  //filter the current user among the results
+  const allUsers = await user
+    .find(keyword)
+    .find({ _id: { $ne: req.user._id } });
+
+  res.send(allUsers);
+};
+
+export { userRegister, login, allUsers };
