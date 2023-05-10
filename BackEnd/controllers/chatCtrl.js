@@ -22,56 +22,32 @@ const accessChat = async (req, res) => {
     .populate("users", "-password")
     .populate("latestMessage");
 
-  console.log("Ischat before: ", isChat);
-
   isChat = await user.populate(isChat, {
     path: "latestMessage.sender",
     select: "name pic email",
-  })
-  console.log("done", isChat);
+  });
+  console.log("chat data after populate: ", isChat);
 
-  if(isChat.length > 0) {
-    res.status(200).send(isChat[0])
-  }else{
+  if (isChat.length > 0) {
+    res.status(200).send(isChat[0]);
+  } else {
     var chatData = {
-          chatName: "sender",
-          isGroupChat: false,
-          users: [userId, req.user._id],
-        };
-    
-        try {
-          const chatCreate = await chat.create(chatData); //here we get the created data completely (only id's of the users are available since that's how this is being saved in db)
-          console.log("Create chat: ", chatCreate);
-          const chatDetails = await chat
-            .find({ _id: chatCreate._id })
-            .populate("users", "-password"); //here we get the data we get from above plus user details without password
-    
-          res.status(200).send(chatDetails);
-        } catch (error) {
-          return res.status(500).send(error.message);
-        }
+      chatName: "sender",
+      isGroupChat: false,
+      users: [userId, req.user._id],
+    };
+
+    try {
+      const chatCreate = await chat.create(chatData); //here we get the created data completely (only id's of the users are available since that's how this is being saved in db)
+      const chatDetails = await chat
+        .find({ _id: chatCreate._id })
+        .populate("users", "-password"); //here we get the data we get from above plus user details without password
+
+      res.status(200).send(chatDetails);
+    } catch (error) {
+      return res.status(500).send(error.message);
+    }
   }
-
-  // if (isChat !== 0) {
-  //   console.log("Hi");
-  //   var chatData = {
-  //     chatName: "sender",
-  //     isGroupChat: false,
-  //     users: [userId, req.user._id],
-  //   };
-
-  //   try {
-  //     const chatCreate = await chat.create(chatData); //here we get the created data completely (only id's of the users are available since that's how this is being saved in db)
-
-  //     const chatDetails = await chat
-  //       .find({ _id: chatCreate._id })
-  //       .populate("users", "-password"); //here we get the data we get from above plus user details without password
-
-  //     res.status(200).send(chatDetails);
-  //   } catch (error) {
-  //     return res.status(500).send(error.message);
-  //   }
-  // }
 };
 
 export { accessChat };
