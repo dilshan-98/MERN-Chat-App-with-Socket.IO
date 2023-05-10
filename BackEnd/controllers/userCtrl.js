@@ -52,6 +52,9 @@ const login = async (req, res) => {
   }
 };
 
+//for queries, "api/user?search=john?lastName=joe" => we access this by req.query.search AND req.query.lastName OR req.query
+//for params, "api/user/:id" => we access this by req.params OR req.params.id
+
 // api/user?search=john
 const allUsers = async (req, res) => {
   //these are operators in mongo
